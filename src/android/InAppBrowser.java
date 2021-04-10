@@ -300,13 +300,13 @@ public class InAppBrowser extends CordovaPlugin {
           String url = InAppBrowser.this.inAppWebView.getUrl();
           if (url.contains("https://chat.zalo.me")) {
             sendCookieZaloToIonic(callbackContext);
-          } else if (url.contains(("https://www.instagram.com"))) {
+          } else if (url.contains("https://www.instagram.com")) {
             String cookies = "";
             if (CookieManager.getInstance().getCookie("https://instagram.com").contains("ds_user_id=")) {
               cookies = CookieManager.getInstance().getCookie("https://instagram.com");
             }
             callbackContext.success(cookies);
-          } else if(url.contains(("facebook.com")){
+          } else if(url.contains("facebook.com")){
             String cookies = CookieManager.getInstance().getCookie("https://m.facebook.com");
             callbackContext.success(cookies);
           } else {
