@@ -118,65 +118,19 @@
 
 - (void)getCookie:(CDVInvokedUrlCommand*)command
 {
-    
     WKWebsiteDataStore* dataStore = [WKWebsiteDataStore defaultDataStore];
     WKHTTPCookieStore *cookieStore = dataStore.httpCookieStore;
     [cookieStore getAllCookies:^(NSArray<NSHTTPCookie *> * _Nonnull cookies) {
         NSString* str = @"";
-        
-        
-        CDVWKInAppBrowser* instance = [CDVWKInAppBrowser getInstance];
-        CDVWKInAppBrowserViewController* inAppBrowserViewController = [instance inAppBrowserViewController];
-        WKWebView* webView = [inAppBrowserViewController webView];
-        NSString* url = [webView.URL absoluteString];
-        if ([url containsString:@"https://chat.zalo.me"]) {
-            NSArray *listCookieAfterConvert = [NSArray array];
-            for (NSHTTPCookie *cookie in cookies)
-            {
-                if ([cookie.domain containsString:@"zalo.me"]) {
-                    NSString* aCookieAfterConvert = @"";
-                    aCookieAfterConvert = [aCookieAfterConvert stringByAppendingString:@"{\"name\":\""];
-                    aCookieAfterConvert = [aCookieAfterConvert stringByAppendingString:cookie.name];
-                    aCookieAfterConvert = [aCookieAfterConvert stringByAppendingString:@"\",\"value\":\""];
-                    aCookieAfterConvert = [aCookieAfterConvert stringByAppendingString:cookie.value];
-                    aCookieAfterConvert = [aCookieAfterConvert stringByAppendingString:@"\",\"domain\":\""];
-                    aCookieAfterConvert = [aCookieAfterConvert stringByAppendingString:cookie.domain];
-                    aCookieAfterConvert = [aCookieAfterConvert stringByAppendingString:@"\"}"];
-                    listCookieAfterConvert = [listCookieAfterConvert arrayByAddingObject:aCookieAfterConvert];
-                }
-            }
-            
-            NSString* joinCookie = [listCookieAfterConvert componentsJoinedByString:@","];
-            str = [str stringByAppendingString:@"["];
-            str = [str stringByAppendingString:joinCookie];
-            str = [str stringByAppendingString:@"]"];
-            CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:str];
-            [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
-            
-        } else if ([url containsString:@"https://www.instagram.com"]) {
-            for (NSHTTPCookie *cookie in cookies)
-            {
-                str = [str stringByAppendingString:cookie.name];
-                str = [str stringByAppendingString:@"="];
-                str = [str stringByAppendingString:cookie.value];
-                str = [str stringByAppendingString:@";"];
-            }
-            
-            if ([str containsString:@"ds_user_id="]) {
-                CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:str];
-                [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
-            }
-        } else {
-            for (NSHTTPCookie *cookie in cookies)
-            {
-                str = [str stringByAppendingString:cookie.name];
-                str = [str stringByAppendingString:@"="];
-                str = [str stringByAppendingString:cookie.value];
-                str = [str stringByAppendingString:@";"];
-            }
-            CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:str];
-            [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+        for (NSHTTPCookie *cookie in cookies)
+        {
+            str = [str stringByAppendingString:cookie.name];
+            str = [str stringByAppendingString:@"="];
+            str = [str stringByAppendingString:cookie.value];
+            str = [str stringByAppendingString:@";"];
         }
+        CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:str];
+        [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
     }];
 }
 
