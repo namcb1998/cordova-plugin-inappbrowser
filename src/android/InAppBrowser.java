@@ -327,9 +327,13 @@ public class InAppBrowser extends CordovaPlugin {
     String[] listCookie = cookies.split(";");
     ArrayList<String> listCookieAfterConvert = new ArrayList<>();
     for (String aCookie : listCookie) {
+
       String[] aCookieSplit = aCookie.split("=");
       String name = aCookieSplit[0];
-      String value = aCookieSplit[1];
+      String value = "";
+      if (aCookieSplit.length > 1) {
+        value = aCookieSplit[1];
+      }
       String aCookieAfterConvert = "{\"name\":\"" + name + "\",\"value\":\"" + value + "\"}";
       listCookieAfterConvert.add(aCookieAfterConvert);
     }
@@ -988,6 +992,10 @@ public class InAppBrowser extends CordovaPlugin {
           CookieManager.getInstance().setAcceptThirdPartyCookies(inAppWebView, true);
         }
 
+        if (url.contains("id.zalo.me")) {
+          inAppWebView.getSettings().setUserAgentString("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36");
+        }
+
         inAppWebView.loadUrl(url);
         inAppWebView.setId(Integer.valueOf(6));
         inAppWebView.getSettings().setLoadWithOverviewMode(true);
@@ -1139,10 +1147,10 @@ public class InAppBrowser extends CordovaPlugin {
         }
       } else if (url.startsWith("geo:") || url.startsWith(WebView.SCHEME_MAILTO) || url.startsWith("market:") || url.startsWith("intent:")) {
         try {
-          Intent intent = new Intent(Intent.ACTION_VIEW);
-          intent.setData(Uri.parse(url));
-          cordova.getActivity().startActivity(intent);
-          return true;
+          //Intent intent = new Intent(Intent.ACTION_VIEW);
+          //intent.setData(Uri.parse(url));
+          //cordova.getActivity().startActivity(intent);
+          return false;
         } catch (android.content.ActivityNotFoundException e) {
           LOG.e(LOG_TAG, "Error with " + url + ": " + e.toString());
         }
